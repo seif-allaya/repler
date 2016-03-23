@@ -1,0 +1,4 @@
+rmdir test*
+pwd
+cd \test && pwd
+pwd
