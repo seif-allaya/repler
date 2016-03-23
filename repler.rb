@@ -1,5 +1,5 @@
 require 'colorize'
-
+require 'optionparser'
 def is_valid_user_input(input)
   char = input.to_s.upcase
   if char =="Y" || char =="N"
@@ -62,8 +62,22 @@ def looper(cmds)
 end
 
 def main
-  file_path = "./instruction.lst"
-  looper(read(file_path))
+  options = {}
+  optparse = OptionParser.new do |opts|
+    opts.banner = "Usage: ruby repler.rb [options]"
+     opts.on('-i', '--input filename', 'Input instruction list') { |file| options[:file_path] = file }
+   end
+   begin
+     optparse.parse!
+     if options[:file_path].nil?
+       raise OptionParser::MissingArgument
+     end
+   rescue OptionParser::ParseError => e
+     puts "No file supplied, Noting to do!!".colorize(:red)
+     puts optparse
+     exit
+   end
+  looper(read(options[:file_path]))
 end
 
 main
