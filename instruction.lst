@@ -1,4 +1,5 @@
 mkdir test
+mkdir test
 pwd
 cd \test && pwd
 pwd

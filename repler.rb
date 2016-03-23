@@ -37,28 +37,30 @@ def read(file_path)
 end
 
 def looper(cmds)
+  index = 0
   cmds.each { |cmd|
-  puts "|> " << cmd.green
-  retobject = execute(cmd)
-  if retobject["exception"] || retobject["retcode"]!=0
+    index = index + 1
+    puts "[#{index}] repler> " << cmd.green
+    retobject = execute(cmd)
+    if retobject["exception"] || retobject["retcode"]!=0
     if retobject["output"].nil? then  retobject["output"] = "No output" end
     if retobject["retcode"].nil? then retobject["retcode"]= "Exit status undefined" end
-    puts "|= " << retobject["retcode"].to_s.cyan << " : " << retobject["output"].to_s.blue << retobject["error"].to_s.gsub("\n","").red
-    valid = false
-    continue = ""
-    until valid do
-      puts "Would you like to continue ? [Y/N] "
-      continue = gets.chomp
-      valid = is_valid_user_input(continue)
+      puts "[#{index}] repler(" << retobject["retcode"].to_s.cyan << ")> " << retobject["output"].to_s.blue << retobject["error"].to_s.gsub("\n","").red
+      valid = false
+      continue = ""
+      until valid do
+        puts "Would you like to continue ? [Y/N] "
+        continue = gets.chomp
+        valid = is_valid_user_input(continue)
+      end
+      if continue == "n" || continue == "N"
+        abort
+      end
+    else
+      #if retobject["output"].to_s == "" then retobject["output"] = "nothing to show" end
+      puts "[#{index}] repler(" << retobject["retcode"].to_s.yellow << ")> " << retobject["output"].gsub("\n","").to_s.green
     end
-    if continue == "n" || continue == "N"
-      abort
-    end
-
-  else
-    puts "|= " << retobject["retcode"].to_s.yellow << " : " << retobject["output"].gsub("\n","").to_s.green
-  end
-}
+  }
 end
 
 def main
